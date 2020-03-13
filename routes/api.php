@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/partners/all', 'Api\PartnersController@getAll');
+Route::get('/orders/list', 'Api\OrdersController@getList');
+Route::get('/orders/statuses', 'Api\OrdersController@getStatusList');
+Route::put('/orders/save', 'Api\OrdersController@save');

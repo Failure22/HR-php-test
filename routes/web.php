@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', 'TestController@test');
+
+Route::get('/weather/{cityCode}', 'WeatherController@index');
+Route::get('/orders', 'OrdersController@index');
+Route::get('/orders/edit/{id}', 'OrdersController@edit');

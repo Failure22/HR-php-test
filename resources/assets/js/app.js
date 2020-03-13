@@ -16,6 +16,8 @@ window.Vue = require('vue');
  */
 
 Vue.component('example', require('./components/Example.vue'));
+Vue.component('order-list', require('./components/OrderList.vue'));
+Vue.component('order-edit', require('./components/OrderEdit.vue'));
 
 const app = new Vue({
     el: '#app'
