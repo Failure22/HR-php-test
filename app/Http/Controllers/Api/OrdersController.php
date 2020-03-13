@@ -6,6 +6,7 @@ use App\Http\Requests\OrderSaveRequest;
 use App\Http\Resources\OrderListResource;
 use App\Order;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -78,9 +79,13 @@ class OrdersController extends Controller
             : $request->get('tab');
 
         return [
-            'page_count' => ceil(Order::count() / $this->getTabData('page_size')),
+            'page_count' => ceil($this->requestedOrders($page)->count() / $this->getTabData('page_size')),
             'page_size'  => $this->getTabData('page_size'),
-            'list' => new OrderListResource($this->getOrdersList($page))
+            'list' => new OrderListResource($this->requestedOrders($page)
+                ->limit($this->getTabData('page_size'))
+                ->offset($page * $this->getTabData('page_size'))
+                ->get()
+            )
         ];
     }
 
@@ -120,19 +125,17 @@ class OrdersController extends Controller
     }
 
     /**
-     * @param $page
+     * @param int $page
      *
-     * @return \Illuminate\Database\Eloquent\Collection|Order[]
+     * @return Builder
      */
-    private function getOrdersList($page)
+    private function requestedOrders(int $page)
     {
         $orderQuery = Order::with([
             'partner',
             'products.product'
         ])
             ->where('status', $this->getTabData('status'))
-            ->limit($this->getTabData('page_size'))
-            ->offset($page * $this->getTabData('page_size'))
             ->orderBy(...$this->getTabData('sort'));
 
         if (!empty($this->getTabData('delivery_dt')))
@@ -143,6 +146,6 @@ class OrdersController extends Controller
             }
         }
 
-        return $orderQuery->get();
+        return $orderQuery;
     }
 }
