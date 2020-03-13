@@ -17,10 +17,11 @@ class CreateCitiesTable extends Migration
             $table->increments('id');
             $table->string('code', 5);
             $table->string('name');
-            $table->string('')
             $table->float('longitude', 10, 7);
             $table->float('latitude', 10, 7);
             $table->integer('temperature')->nullable();
+
+            $table->unique('code');
         });
     }
 
